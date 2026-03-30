@@ -1,106 +1,94 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini App</title>
-    <style>
-        /* Asosiy sozlamalar */
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #0f172a;
-            color: white;
-            display: flex;
-            justify-content: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 450px;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        /* Profil qismi */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .user-info { display: flex; align-items: center; gap: 10px; }
-        .avatar { width: 40px; height: 40px; background: #334155; border-radius: 50%; }
-        .coins { background: #eab308; color: black; padding: 5px 15px; border-radius: 8px; font-weight: bold; }
-
-        /* Asosiy karta */
-        .card { background: #3b82f6; padding: 20px; border-radius: 20px; margin-bottom: 20px; }
-        .btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-
-        /* Ripple effekti (Suv tomchisi) */
-        .ripple-btn {
-            position: relative;
-            overflow: hidden;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            padding: 10px 5px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 11px;
-            transition: background 0.3s;
-        }
-        .ripple-btn .ripple {
-            position: absolute;
-            background: rgba(255,255,255,0.4);
-            transform: scale(0);
-            border-radius: 50%;
-            animation: ripple-anim 0.6s linear;
-        }
-        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
-
-        /* O'yinlar gridi */
-        .games-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .game-card { background: #1e293b; height: 100px; border-radius: 15px; display: flex; justify-content: center; align-items: center; border: 1px solid #334155; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>Donateouz Mini App</title>
+<style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background: #f0f2f5; }
+    header { background: #4a90e2; color: white; padding: 15px; text-align:center; font-size:20px; }
+    .menu { display: flex; justify-content: space-around; background:#fff; padding:10px 0; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+    .menu div { cursor:pointer; padding:8px 15px; border-radius:5px; transition:0.3s; }
+    .menu div:hover { background:#e0e0e0; }
+    .games { display:flex; flex-wrap:wrap; justify-content: space-around; margin:20px; }
+    .game-card { background:#fff; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.1); width:150px; margin:10px; text-align:center; cursor:pointer; transition:0.3s; }
+    .game-card:hover { transform: scale(1.05); }
+    .game-card img { width:100%; border-top-left-radius:10px; border-top-right-radius:10px; }
+    .game-card p { margin:10px 0; font-weight:bold; }
+    #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; }
+    #modal-content { background:#fff; padding:20px; border-radius:10px; width:80%; max-width:400px; text-align:center; }
+    #modal-content input, #modal-content select { width:90%; padding:8px; margin:10px 0; }
+    #modal-content button { padding:10px 20px; margin-top:10px; background:#4a90e2; color:white; border:none; border-radius:5px; cursor:pointer; }
+    #modal-content button:hover { background:#357ABD; }
+</style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <div class="user-info">
-            <div class="avatar"></div>
-            <span>Khasanjon Umarov</span>
-        </div>
-        <div class="coins">33</div>
-    </div>
+<header>Donateouz Mini App</header>
 
-    <div class="card">
-        <div style="font-size: 20px; font-weight: bold;">200 so'm</div>
-        <div style="opacity: 0.8; font-size: 12px; margin-bottom: 10px;">Telegram username</div>
-        <div class="btn-grid">
-            <button class="ripple-btn">Hisobni to'ldirish</button>
-            <button class="ripple-btn">Bonus kodlar</button>
-            <button class="ripple-btn">To'lov tarixi</button>
-        </div>
-    </div>
+<div class="menu">
+    <div onclick="showSection('topup')">Balansni to‘ldirish</div>
+    <div onclick="showSection('about')">Biz haqimizda</div>
+    <div onclick="showSection('tokens')">Tokenlarim</div>
+</div>
 
-    <div class="games-grid">
-        <div class="game-card">Game 1</div>
-        <div class="game-card">Game 2</div>
-        <div class="game-card">Game 3</div>
+<div class="games">
+    <div class="game-card" onclick="openGameModal('PUBG')">
+        <img src="https://i.ibb.co/xGJ8H5v/pubg.jpg" alt="PUBG">
+        <p>PUBG</p>
+    </div>
+    <div class="game-card" onclick="openGameModal('MLBB')">
+        <img src="https://i.ibb.co/2dG9XKf/mlbb.jpg" alt="MLBB">
+        <p>MLBB</p>
+    </div>
+</div>
+
+<div id="modal">
+    <div id="modal-content">
+        <h3 id="modal-title">O‘yin tanlandi</h3>
+        <p id="selected-game"></p>
+        <input type="text" id="user-id" placeholder="O‘yinchi ID sini kiriting">
+        <select id="package">
+            <option value="">Paketni tanlang</option>
+            <option value="100">100 Almaz/UC</option>
+            <option value="500">500 Almaz/UC</option>
+            <option value="1000">1000 Almaz/UC</option>
+        </select>
+        <button onclick="buyToken()">Token olish</button>
+        <p id="modal-message" style="color:green; font-weight:bold;"></p>
+        <button onclick="closeModal()">Bekor qilish</button>
     </div>
 </div>
 
 <script>
-    // Ripple effekt uchun JavaScript
-    document.querySelectorAll('.ripple-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = e.clientX - rect.left - size/2 + 'px';
-            ripple.style.top = e.clientY - rect.top - size/2 + 'px';
-            ripple.classList.add('ripple');
-            this.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 600);
-        });
-    });
+let currentSection = '';
+function showSection(section) {
+    currentSection = section;
+    alert('Siz "' + section + '" bo‘limiga o‘tdingiz');
+}
+
+function openGameModal(game) {
+    document.getElementById('modal').style.display = 'flex';
+    document.getElementById('modal-title').innerText = game + ' token olish';
+    document.getElementById('selected-game').innerText = 'Siz tanladingiz: ' + game;
+    document.getElementById('modal-message').innerText = '';
+}
+
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+}
+
+function buyToken() {
+    let userId = document.getElementById('user-id').value.trim();
+    let pkg = document.getElementById('package').value;
+    if(!userId || !pkg){
+        alert('Iltimos, ID va paketni tanlang');
+        return;
+    }
+    // Bu yerda balansdan yechish va token berish logikasi bo‘ladi
+    document.getElementById('modal-message').innerText = 'Token muvaffaqiyatli berildi! ID: '+userId+', Paket: '+pkg;
+}
 </script>
 
 </body>
