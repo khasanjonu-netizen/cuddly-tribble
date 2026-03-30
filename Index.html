@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donateouz Mini App</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f2f2f2; }
+    .button { background: #0088cc; color: white; padding: 10px 20px; margin: 5px; border: none; cursor: pointer; border-radius: 5px; }
+    .section { margin-bottom: 20px; padding: 15px; background: white; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h2>Donateouz Mini App Demo</h2>
+
+  <div class="section">
+    <h3>Balansingiz: <span id="balance">0</span> $</h3>
+    <button class="button" onclick="addBalance()">Balansni to‘ldirish</button>
+  </div>
+
+  <div class="section">
+    <h3>Tokenlaringiz: <span id="tokens">0</span></h3>
+    <button class="button" onclick="spinBaraban()">Baraban aylantirish</button>
+  </div>
+
+  <div class="section">
+    <h3>O‘yin paketlari</h3>
+    <button class="button" onclick="buyPackage('MLBB','86 Diamond')">MLBB 86 Diamond - $10</button>
+    <button class="button" onclick="buyPackage('PUBG','UC 60')">PUBG UC 60 - $5</button>
+  </div>
+
+  <script>
+    let balance = 0;
+    let tokens = 0;
+
+    function addBalance() {
+      let amount = prompt("Qancha qo‘shmoqchisiz?");
+      amount = parseFloat(amount);
+      if (!isNaN(amount)) {
+        balance += amount;
+        document.getElementById('balance').innerText = balance;
+        alert(`Balansingiz yangilandi: ${balance}$`);
+      }
+    }
+
+    function spinBaraban() {
+      if (tokens <= 0) { alert("Tokeningiz yetarli emas!"); return; }
+      tokens--;
+      document.getElementById('tokens').innerText = tokens;
+      let result = Math.random() < 0.3 ? "🎉 Mukofot oldingiz!" : "❌ Hech narsa chiqmadi";
+      alert(result);
+    }
+
+    function buyPackage(game, pack) {
+      let price = 0;
+      if(game=="MLBB" && pack=="86 Diamond") price=10;
+      if(game=="PUBG" && pack=="UC 60") price=5;
+      if(balance >= price){
+        balance -= price;
+        tokens += price; // Demo uchun token qiymati = $ qiymat
+        document.getElementById('balance').innerText = balance;
+        document.getElementById('tokens').innerText = tokens;
+        alert(`${pack} paketini oldingiz!`);
+      } else {
+        alert("Balansingiz yetarli emas!");
+      }
+    }
+  </script>
+</body>
+</html>
