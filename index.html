@@ -3,91 +3,239 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache">
-<title>Donateouz Mini App</title>
+<title>Donateouz</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <style>
-    body { font-family: Arial, sans-serif; margin:0; padding:0; background: #f0f2f5; }
-    header { background: #4a90e2; color: white; padding: 15px; text-align:center; font-size:20px; }
-    .menu { display: flex; justify-content: space-around; background:#fff; padding:10px 0; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
-    .menu div { cursor:pointer; padding:8px 15px; border-radius:5px; transition:0.3s; }
-    .menu div:hover { background:#e0e0e0; }
-    .games { display:flex; flex-wrap:wrap; justify-content: space-around; margin:20px; }
-    .game-card { background:#fff; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.1); width:150px; margin:10px; text-align:center; cursor:pointer; transition:0.3s; }
-    .game-card:hover { transform: scale(1.05); }
-    .game-card img { width:100%; border-top-left-radius:10px; border-top-right-radius:10px; }
-    .game-card p { margin:10px 0; font-weight:bold; }
-    #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; }
-    #modal-content { background:#fff; padding:20px; border-radius:10px; width:80%; max-width:400px; text-align:center; }
-    #modal-content input, #modal-content select { width:90%; padding:8px; margin:10px 0; }
-    #modal-content button { padding:10px 20px; margin-top:10px; background:#4a90e2; color:white; border:none; border-radius:5px; cursor:pointer; }
-    #modal-content button:hover { background:#357ABD; }
+body {
+    margin:0;
+    font-family: Arial;
+    background:#0f172a;
+    color:white;
+}
+
+/* HEADER */
+.header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:15px;
+}
+
+.user {
+    display:flex;
+    align-items:center;
+}
+
+.avatar {
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:#444;
+    margin-right:10px;
+}
+
+/* BALANCE CARD */
+.balance {
+    margin:15px;
+    padding:20px;
+    border-radius:20px;
+    background:linear-gradient(135deg,#6d5dfc,#4a3df0);
+}
+
+.balance h2 {
+    margin:0;
+}
+
+.actions {
+    display:flex;
+    justify-content:space-between;
+    margin-top:15px;
+}
+
+.action-btn {
+    background:white;
+    color:black;
+    padding:10px;
+    border-radius:10px;
+    width:30%;
+    text-align:center;
+    font-size:12px;
+    cursor:pointer;
+}
+
+/* SECTION */
+.section {
+    padding:15px;
+}
+
+/* GAMES */
+.games {
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.game {
+    width:30%;
+    background:#1e293b;
+    border-radius:15px;
+    padding:5px;
+    cursor:pointer;
+}
+
+.game img {
+    width:100%;
+    border-radius:10px;
+}
+
+.game p {
+    text-align:center;
+}
+
+/* MODAL */
+.modal {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#000000cc;
+    display:none;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content {
+    background:#1e293b;
+    padding:20px;
+    border-radius:15px;
+    width:90%;
+}
+
+button {
+    padding:10px;
+    width:100%;
+    margin-top:10px;
+    border:none;
+    border-radius:10px;
+    background:#6d5dfc;
+    color:white;
+}
+
+/* NAVBAR */
+.nav {
+    position:fixed;
+    bottom:0;
+    width:100%;
+    background:#1e293b;
+    display:flex;
+    justify-content:space-around;
+    padding:10px 0;
+}
+
+.nav div {
+    cursor:pointer;
+}
 </style>
 </head>
+
 <body>
 
-<header>Donateouz Mini App</header>
-
-<div class="menu">
-    <div onclick="showSection('topup')">Balansni to‘ldirish</div>
-    <div onclick="showSection('about')">Biz haqimizda</div>
-    <div onclick="showSection('tokens')">Tokenlarim</div>
+<div class="header">
+    <div class="user">
+        <div class="avatar"></div>
+        <div id="username">User</div>
+    </div>
+    <div>🪙 <span id="coins">0</span></div>
 </div>
 
-<div class="games">
-    <div class="game-card" onclick="openGameModal('PUBG')">
-        <img src="https://i.ibb.co/xGJ8H5v/pubg.jpg" alt="PUBG">
-        <p>PUBG</p>
-    </div>
-    <div class="game-card" onclick="openGameModal('MLBB')">
-        <img src="https://i.ibb.co/2dG9XKf/mlbb.jpg" alt="MLBB">
-        <p>MLBB</p>
+<div class="balance">
+    <h2 id="balance">0 so'm</h2>
+    <p id="tg_username">@username</p>
+
+    <div class="actions">
+        <div class="action-btn" onclick="openPage('topup')">Hisob to‘ldirish</div>
+        <div class="action-btn" onclick="openPage('bonus')">Bonus kodlar</div>
+        <div class="action-btn" onclick="openPage('history')">To‘lov tarixi</div>
     </div>
 </div>
 
-<div id="modal">
-    <div id="modal-content">
-        <h3 id="modal-title">O‘yin tanlandi</h3>
-        <p id="selected-game"></p>
-        <input type="text" id="user-id" placeholder="O‘yinchi ID sini kiriting">
-        <select id="package">
-            <option value="">Paketni tanlang</option>
-            <option value="100">100 Almaz/UC</option>
-            <option value="500">500 Almaz/UC</option>
-            <option value="1000">1000 Almaz/UC</option>
-        </select>
-        <button onclick="buyToken()">Token olish</button>
-        <p id="modal-message" style="color:green; font-weight:bold;"></p>
-        <button onclick="closeModal()">Bekor qilish</button>
+<div class="section">
+    <h3>O‘yinlar</h3>
+    <div class="games">
+        <div class="game" onclick="openGame('PUBG')">
+            <img src="https://i.ibb.co/xGJ8H5v/pubg.jpg">
+            <p>PUBG</p>
+        </div>
+        <div class="game" onclick="openGame('MLBB')">
+            <img src="https://i.ibb.co/2dG9XKf/mlbb.jpg">
+            <p>MLBB</p>
+        </div>
     </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle"></h3>
+        <input id="playerId" placeholder="ID kiriting">
+        <button onclick="buy()">Sotib olish</button>
+        <button onclick="closeModal()">Yopish</button>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<div class="nav">
+    <div onclick="openPage('home')">🏠</div>
+    <div onclick="openPage('gift')">🎁</div>
+    <div onclick="openPage('history')">🕓</div>
+    <div onclick="openPage('settings')">⚙️</div>
 </div>
 
 <script>
-let currentSection = '';
-function showSection(section) {
-    currentSection = section;
-    alert('Siz "' + section + '" bo‘limiga o‘tdingiz');
+let tg = window.Telegram.WebApp;
+tg.expand();
+
+/* USER DATA */
+if(tg.initDataUnsafe.user){
+    document.getElementById("username").innerText = tg.initDataUnsafe.user.first_name;
+    document.getElementById("tg_username").innerText = "@"+tg.initDataUnsafe.user.username;
 }
 
-function openGameModal(game) {
-    document.getElementById('modal').style.display = 'flex';
-    document.getElementById('modal-title').innerText = game + ' token olish';
-    document.getElementById('selected-game').innerText = 'Siz tanladingiz: ' + game;
-    document.getElementById('modal-message').innerText = '';
+/* BALANCE LOCAL */
+let balance = localStorage.getItem("balance") || 200;
+document.getElementById("balance").innerText = balance + " so'm";
+
+/* NAVIGATION */
+function openPage(page){
+    alert(page + " bo‘limi (keyin kod yozamiz)");
 }
 
-function closeModal() {
-    document.getElementById('modal').style.display = 'none';
+/* GAME */
+function openGame(name){
+    document.getElementById("modal").style.display="flex";
+    document.getElementById("modalTitle").innerText = name;
 }
 
-function buyToken() {
-    let userId = document.getElementById('user-id').value.trim();
-    let pkg = document.getElementById('package').value;
-    if(!userId || !pkg){
-        alert('Iltimos, ID va paketni tanlang');
+function closeModal(){
+    document.getElementById("modal").style.display="none";
+}
+
+/* BUY */
+function buy(){
+    let id = document.getElementById("playerId").value;
+    if(!id){
+        alert("ID kiriting");
         return;
     }
-    // Bu yerda balansdan yechish va token berish logikasi bo‘ladi
-    document.getElementById('modal-message').innerText = 'Token muvaffaqiyatli berildi! ID: '+userId+', Paket: '+pkg;
+
+    balance -= 10;
+    localStorage.setItem("balance", balance);
+    document.getElementById("balance").innerText = balance + " so'm";
+
+    alert("Sotib olindi!");
 }
 </script>
 
