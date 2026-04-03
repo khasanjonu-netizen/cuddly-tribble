@@ -200,8 +200,17 @@ tg.expand();
 
 /* USER DATA */
 if(tg.initDataUnsafe.user){
-    document.getElementById("username").innerText = tg.initDataUnsafe.user.first_name;
-    document.getElementById("tg_username").innerText = "@"+tg.initDataUnsafe.user.username;
+    let user = tg.initDataUnsafe.user;
+
+    document.getElementById("username").innerText = user.first_name;
+    document.getElementById("tg_username").innerText = "@"+user.username;
+
+    // 🔥 TEST QO‘SHILDI
+    alert(
+        "Ism: " + user.first_name + "\n" +
+        "Username: @" + user.username + "\n" +
+        "ID: " + user.id
+    );
 }
 
 /* BALANCE LOCAL */
