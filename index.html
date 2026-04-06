@@ -156,7 +156,7 @@ button {
     <p id="tg_username">@username</p>
 
     <div class="actions">
-        <div class="action-btn" onclick="openPage('topup')">Hisob to‘ldirish</div>
+        <div class="action-btn" onclick="topup(10000)">Hisob to‘ldirish</div>
         <div class="action-btn" onclick="openPage('bonus')">Bonus kodlar</div>
         <div class="action-btn" onclick="openPage('history')">To‘lov tarixi</div>
     </div>
@@ -214,8 +214,24 @@ if(tg.initDataUnsafe.user){
 }
 
 /* BALANCE LOCAL */
-let balance = localStorage.getItem("balance") || 200;
-document.getElementById("balance").innerText = balance + " so'm";
+// ✅ SERVERDAN BALANS OLISH
+function loadBalance(){
+    fetch("http://127.0.0.1:5000/get_user", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user_id: userId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("balance").innerText = data.balance + " so'm";
+    });
+}
+
+loadBalance();
 
 /* NAVIGATION */
 function openPage(page){
@@ -235,16 +251,49 @@ function closeModal(){
 /* BUY */
 function buy(){
     let id = document.getElementById("playerId").value;
+
     if(!id){
         alert("ID kiriting");
         return;
     }
 
-    balance -= 10;
-    localStorage.setItem("balance", balance);
-    document.getElementById("balance").innerText = balance + " so'm";
-
-    alert("Sotib olindi!");
+    fetch("http://127.0.0.1:5000/buy", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user_id: userId,
+            amount: 10
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.error){
+            alert(data.error);
+        } else {
+            document.getElementById("balance").innerText = data.balance + " so'm";
+            alert("Sotib olindi!");
+        }
+    });
+}
+// 🔥 TOPUP FUNKSIYA
+function topup(amount){
+    fetch("http://127.0.0.1:5000/topup", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user_id: userId,
+            amount: amount
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("balance").innerText = data.balance + " so'm";
+        alert("Balans to‘ldirildi!");
+    });
 }
 </script>
 
