@@ -8,6 +8,13 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
+.pay-btn{
+    background:#2c2f5a;
+    padding:10px;
+    border-radius:10px;
+    margin-top:10px;
+    text-align:center;
+}
 body {
     margin:0;
     font-family: Arial;
@@ -156,7 +163,7 @@ button {
     <p id="tg_username">@username</p>
 
     <div class="actions">
-        <div class="action-btn" onclick="topup(10000)">Hisob to‘ldirish</div>
+        <div class="action-btn" onclick="openTopup()">Hisob to‘ldirish</div>
         <div class="action-btn" onclick="openPage('bonus')">Bonus kodlar</div>
         <div class="action-btn" onclick="openPage('history')">To‘lov tarixi</div>
     </div>
@@ -193,7 +200,33 @@ button {
     <div onclick="openPage('history')">🕓</div>
     <div onclick="openPage('settings')">⚙️</div>
 </div>
+<div id="paymentPage" style="display:none; padding:20px; color:white;">
 
+    <h3>Hisob to‘ldirish</h3>
+
+    <!-- 1. SUMMA -->
+    <input id="amountInput" placeholder="Miqdor kiriting">
+
+    <button onclick="goToMethods()">Davom etish</button>
+
+    <!-- 2. METHOD TANLASH -->
+    <div id="methods" style="display:none; margin-top:20px;">
+        <div onclick="selectMethod('uzcard')" class="pay-btn">Uzcard</div>
+        <div onclick="selectMethod('humo')" class="pay-btn">Humo</div>
+        <div onclick="selectMethod('visa')" class="pay-btn">Visa</div>
+    </div>
+
+    <!-- 3. TO‘LOV INFO -->
+    <div id="paymentInfo" style="display:none; margin-top:20px;">
+        <p>Karta raqam:</p>
+        <b id="cardNumber"></b>
+
+        <p id="timer" style="color:yellow;"></p>
+
+        <button onclick="confirmPayment()">To‘lov qildim</button>
+    </div>
+
+</div>
 <script>
 let tg = window.Telegram.WebApp;
 tg.expand();
@@ -275,6 +308,81 @@ function buy(){
             document.getElementById("balance").innerText = data.balance + " so'm";
             alert("Sotib olindi!");
         }
+    });
+}
+// 🔥 PAYMENT LOGIKA
+
+let selectedAmount = 0;
+
+function openTopup(){
+    document.getElementById("paymentPage").style.display = "block";
+}
+
+function goToMethods(){
+    let amount = document.getElementById("amountInput").value;
+
+    if(!amount || amount < 1000){
+        alert("Minimal 1000 so‘m");
+        return;
+    }
+
+    selectedAmount = amount;
+
+    document.getElementById("methods").style.display = "block";
+}
+
+let cards = {
+    uzcard: "8600 1234 5678 9012",
+    humo: "9860 1234 5678 9012",
+    visa: "4277 1234 5678 9012"
+};
+
+let timeLeft = 300;
+let timerInterval;
+
+function selectMethod(method){
+    document.getElementById("paymentInfo").style.display = "block";
+    document.getElementById("cardNumber").innerText = cards[method];
+
+    startTimer();
+}
+
+function startTimer(){
+    clearInterval(timerInterval);
+    timeLeft = 300;
+
+    timerInterval = setInterval(() => {
+        let min = Math.floor(timeLeft / 60);
+        let sec = timeLeft % 60;
+
+        document.getElementById("timer").innerText =
+            "Qolgan vaqt: " + min + ":" + (sec < 10 ? "0"+sec : sec);
+
+        timeLeft--;
+
+        if(timeLeft < 0){
+            clearInterval(timerInterval);
+            alert("Vaqt tugadi!");
+        }
+    }, 1000);
+}
+
+function confirmPayment(){
+
+    fetch("http://127.0.0.1:5000/topup", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user_id: userId,
+            amount: selectedAmount
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("balance").innerText = data.balance + " so'm";
+        alert("To‘lov qabul qilindi!");
     });
 }
 // 🔥 TOPUP FUNKSIYA
