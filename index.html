@@ -10,6 +10,19 @@
 <style>
 .pay-btn{
     background:#2c2f5a;
+    padding:12px;
+    border-radius:10px;
+    margin-top:10px;
+    text-align:center;
+    color:white;
+}
+.selected{
+    background:green;
+}
+</style>
+<style>
+.pay-btn{
+    background:#2c2f5a;
     padding:10px;
     border-radius:10px;
     margin-top:10px;
@@ -311,6 +324,101 @@ function buy(){
     });
 }
 // 🔥 PAYMENT LOGIKA
+let selectedAmount = 0;
+let selectedCard = "";
+
+// PANELNI OCHISH
+function openTopup(){
+    document.getElementById("step1").style.display = "block";
+    document.getElementById("step2").style.display = "none";
+}
+
+// KARTA TANLASH
+function selectCard(type){
+    selectedCard = type;
+
+    // tanlanganini ranglash
+    let buttons = document.getElementsByClassName("pay-btn");
+    for(let i=0;i<buttons.length;i++){
+        buttons[i].classList.remove("selected");
+    }
+
+    event.target.classList.add("selected");
+}
+
+// STEP 1 → STEP 2
+let cards = {
+    uzcard: "8600 1234 5678 9012",
+    humo: "9860 1234 5678 9012",
+    visa: "4277 1234 5678 9012"
+};
+
+function goStep2(){
+    let amount = document.getElementById("amountInput").value;
+
+    if(!amount || amount < 1000){
+        alert("Minimal 1000 so‘m");
+        return;
+    }
+
+    if(!selectedCard){
+        alert("Karta tanlang");
+        return;
+    }
+
+    selectedAmount = amount;
+
+    document.getElementById("step1").style.display = "none";
+    document.getElementById("step2").style.display = "block";
+
+    document.getElementById("cardNumber").innerText = cards[selectedCard];
+
+    startTimer();
+}
+
+// TIMER
+let timeLeft = 300;
+let timerInterval;
+
+function startTimer(){
+    clearInterval(timerInterval);
+    timeLeft = 300;
+
+    timerInterval = setInterval(() => {
+        let min = Math.floor(timeLeft / 60);
+        let sec = timeLeft % 60;
+
+        document.getElementById("timer").innerText =
+            "Qolgan vaqt: " + min + ":" + (sec < 10 ? "0"+sec : sec);
+
+        timeLeft--;
+
+        if(timeLeft < 0){
+            clearInterval(timerInterval);
+            alert("Vaqt tugadi!");
+            document.getElementById("step2").style.display = "none";
+        }
+    }, 1000);
+}
+
+// TASDIQLASH
+function confirmPayment(){
+    fetch("http://127.0.0.1:5000/topup", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user_id: userId,
+            amount: selectedAmount
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("balance").innerText = data.balance + " so'm";
+        alert("To‘lov qabul qilindi!");
+    });
+}
 
 let selectedAmount = 0;
 
@@ -404,6 +512,31 @@ function topup(amount){
     });
 }
 </script>
+<!-- STEP 1 -->
+<div id="step1" style="display:none; padding:20px;">
+    <h3>Hisob to‘ldirish</h3>
 
+    <input id="amountInput" placeholder="Summani kiriting">
+
+    <h4>To‘lov usuli:</h4>
+
+    <div class="pay-btn" onclick="selectCard('uzcard')">Uzcard</div>
+    <div class="pay-btn" onclick="selectCard('humo')">Humo</div>
+    <div class="pay-btn" onclick="selectCard('visa')">Visa</div>
+
+    <button onclick="goStep2()">Davom etish</button>
+</div>
+
+<!-- STEP 2 -->
+<div id="step2" style="display:none; padding:20px;">
+    <h3>To‘lov qiling</h3>
+
+    <p>Karta raqam:</p>
+    <b id="cardNumber"></b>
+
+    <p id="timer" style="color:yellow;"></p>
+
+    <button onclick="confirmPayment()">To‘lov qildim</button>
+</div>
 </body>
 </html>
