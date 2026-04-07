@@ -380,6 +380,8 @@ let cards = {
 function goStep2(){
     let amount = document.getElementById("amountInput").value;
 
+    amount = parseInt(amount); // 🔥 ENG MUHIM QATOR
+
     if(!amount || amount < 1000){
         alert("Minimal 1000 so‘m");
         return;
