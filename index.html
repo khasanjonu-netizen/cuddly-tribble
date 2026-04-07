@@ -162,7 +162,32 @@ button {
 </head>
 
 <body>
+<!-- STEP 1 -->
+<div id="step1" style="display:none; padding:20px;">
+    <h3>Hisob to‘ldirish</h3>
 
+    <input id="amountInput" placeholder="Summani kiriting">
+
+    <h4>To‘lov usuli:</h4>
+
+    <div class="pay-btn" onclick="selectCard('uzcard')">Uzcard</div>
+    <div class="pay-btn" onclick="selectCard('humo')">Humo</div>
+    <div class="pay-btn" onclick="selectCard('visa')">Visa</div>
+
+    <button onclick="goStep2()">Davom etish</button>
+</div>
+
+<!-- STEP 2 -->
+<div id="step2" style="display:none; padding:20px;">
+    <h3>To‘lov qiling</h3>
+
+    <p>Karta raqam:</p>
+    <b id="cardNumber"></b>
+
+    <p id="timer" style="color:yellow;"></p>
+
+    <button onclick="confirmPayment()">To‘lov qildim</button>
+</div>
 <div class="header">
     <div class="user">
         <div class="avatar"></div>
@@ -458,31 +483,6 @@ function topup(amount){
     });
 }
 </script>
-<!-- STEP 1 -->
-<div id="step1" style="display:none; padding:20px;">
-    <h3>Hisob to‘ldirish</h3>
 
-    <input id="amountInput" placeholder="Summani kiriting">
-
-    <h4>To‘lov usuli:</h4>
-
-    <div class="pay-btn" onclick="selectCard('uzcard')">Uzcard</div>
-    <div class="pay-btn" onclick="selectCard('humo')">Humo</div>
-    <div class="pay-btn" onclick="selectCard('visa')">Visa</div>
-
-    <button onclick="goStep2()">Davom etish</button>
-</div>
-
-<!-- STEP 2 -->
-<div id="step2" style="display:none; padding:20px;">
-    <h3>To‘lov qiling</h3>
-
-    <p>Karta raqam:</p>
-    <b id="cardNumber"></b>
-
-    <p id="timer" style="color:yellow;"></p>
-
-    <button onclick="confirmPayment()">To‘lov qildim</button>
-</div>
 </body>
 </html>
