@@ -420,60 +420,6 @@ function confirmPayment(){
     });
 }
 
-let selectedAmount = 0;
-
-function openTopup(){
-    document.getElementById("paymentPage").style.display = "block";
-}
-
-function goToMethods(){
-    let amount = document.getElementById("amountInput").value;
-
-    if(!amount || amount < 1000){
-        alert("Minimal 1000 so‘m");
-        return;
-    }
-
-    selectedAmount = amount;
-
-    document.getElementById("methods").style.display = "block";
-}
-
-let cards = {
-    uzcard: "8600 1234 5678 9012",
-    humo: "9860 1234 5678 9012",
-    visa: "4277 1234 5678 9012"
-};
-
-let timeLeft = 300;
-let timerInterval;
-
-function selectMethod(method){
-    document.getElementById("paymentInfo").style.display = "block";
-    document.getElementById("cardNumber").innerText = cards[method];
-
-    startTimer();
-}
-
-function startTimer(){
-    clearInterval(timerInterval);
-    timeLeft = 300;
-
-    timerInterval = setInterval(() => {
-        let min = Math.floor(timeLeft / 60);
-        let sec = timeLeft % 60;
-
-        document.getElementById("timer").innerText =
-            "Qolgan vaqt: " + min + ":" + (sec < 10 ? "0"+sec : sec);
-
-        timeLeft--;
-
-        if(timeLeft < 0){
-            clearInterval(timerInterval);
-            alert("Vaqt tugadi!");
-        }
-    }, 1000);
-}
 
 function confirmPayment(){
 
