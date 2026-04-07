@@ -15,6 +15,7 @@
     margin-top:10px;
     text-align:center;
     color:white;
+    cursor:pointer; /* 🔥 MUHIM */
 }
 .selected{
     background:green;
@@ -358,16 +359,17 @@ function openTopup(){
 }
 
 // KARTA TANLASH
-function selectCard(type){
+function selectCard(type, el){
     selectedCard = type;
 
-    // tanlanganini ranglash
-    let buttons = document.getElementsByClassName("pay-btn");
-    for(let i=0;i<buttons.length;i++){
-        buttons[i].classList.remove("selected");
+    // hamma tugmadan rangni olib tashlaymiz
+    let btns = document.getElementsByClassName("pay-btn");
+    for(let i=0;i<btns.length;i++){
+        btns[i].classList.remove("selected");
     }
 
-    event.target.classList.add("selected");
+    // bosilganini belgilaymiz
+    el.classList.add("selected");
 }
 
 // STEP 1 → STEP 2
